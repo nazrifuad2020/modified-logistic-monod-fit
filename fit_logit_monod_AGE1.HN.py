@@ -278,7 +278,6 @@ print(par_est_rslt)
 
 # plot the model simulation
 fig, axs = plt.subplots(nrows=3, ncols=2, constrained_layout=True)
-
 axs[0,0].set_xlabel('Time (hr)')
 axs[0,0].set_ylabel('10^6 cells/mL')
 axs[0,0].set_title('Viable cells')
