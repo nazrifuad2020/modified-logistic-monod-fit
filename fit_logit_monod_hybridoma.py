@@ -55,7 +55,8 @@ k = 10**logk
 bheta = 10**logbheta # bheta=1/Xmax
 Klys = 10**logKlys
 Xt = Xv+Xd
-dXd = k*Xv*(1-bheta*Xt)-dXv#-Klys*Xd
+kxd = k*(1-bheta*Xt)-mu+Kd
+dXd = kxd*Xv#-Klys*Xd
 
 Ysx = 10**logYsx #Ysx = 1/Yxs
 KdegS = 10**logKdegS
@@ -70,6 +71,8 @@ dP2 = Kp2x*Xv
 dy = vertcat(dXv,dXd,dS,dP1,dP2)
 
 f_ode = Function('f_ode',[y],[dy],['y'],['dy'])
+
+f_kxd = Function('f_kxd',[y,vertcat(*pars)],[kxd])
 
 # Start with empty NLP
 w=[]
@@ -99,8 +102,7 @@ lbwX += lbstates
 ubwX += ubstates
 x0 += meanstates
 
-fj = f_ode(10**Xk)
-g += [fj[1]]
+g += [f_kxd(10**Xk,vertcat(*pars))]
 lbg += [0]
 ubg += [np.inf]
 
@@ -165,7 +167,7 @@ for k in range(1,N):
         lbg += [0]*nstates
         ubg += [0]*nstates
         
-        g += [fj[1]]
+        g += [f_kxd(10**Xc[j-1],vertcat(*pars))]
         lbg += [0]
         ubg += [np.inf]
 
